@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <title>Document</title>
+    <script>
+      $(() => {
+        $("#bookid").disabled = false;
+
+        $("#bookid").blur(() => {
+          //difficult things begin
+          //the below line is input
+          let y = $("#bookid").val();
+
+          $("#bookid").disabled = true;
+          let ajaxparams = {
+            data: { x: y },
+            url: "http://localhost:8081/getbook",
+            type: "get",
+            dataType: "json",
+            success: (output) => {
+              if (output.bookfoundstatus) {
+                $("#msg1").text("book details found");
+                $("#bookname").val(output.bookdetails.bookname);
+                $("#did").val(output.bookdetails.bookid);
+                $("#msg").text(
+                  output.bookdetails.bookid +
+                    " " +
+                    output.bookdetails.bookname +
+                    " " +
+                    output.bookdetails.price
+                );
+              } else {
+                $("#msg1").text("book details not found");
+                $("#bookname").val("");
+                $("#did").val("");
+              }
+            },
+            error: (error) => {
+              console.log("failure " + error);
+            },
+          }; //end of the object creation for ajaxparams
+          $.ajax(ajaxparams);
+        });
+
+        //ON CLICK UPDATE
+        $("#btn1").click(() => {
+          //difficult things begin
+          //the below line is input
+          let x = $("#bookid").val();
+          let y = $("#bookname").val();
+          let z = $("#price").val();
+          $("#bookno").disabled = false;
+          let ajaxparams = {
+            data: { a: x, b: y, c: z },
+            url: "http://localhost:8081/update",
+            type: "get",
+            dataType: "json",
+            success: (output) => {
+              if (output.empfoundstatus) {
+                $("#msg1").text("book details not updated");
+              } else {
+                $("#msg1").text("book details updated");
+                $("#msg").text("book details updated");
+              }
+            },
+            error: (error) => {
+              console.log("failure " + error);
+            },
+          }; //end of the object creation for ajaxparams
+          $.ajax(ajaxparams);
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <input id="bookid" placeholder="Enter Book ID" />
+    <span id="msg1"></span><br />
+    <input id="bookname" placeholder="Enter book name" /><br />
+    <input id="price" placeholder="Enter price" /><br />
+    <button id="btn1">Update</button>
+    <hr />
+    <p id="msg"></p>
+  </body>
+</html>
